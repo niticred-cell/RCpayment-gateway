@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial Payment Demo</title>
+
+<link rel="stylesheet" href="style.css">
+
+<!-- QR library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+</head>
+<body>
+
+<div class="header">
+  <h1>Payment (Demo)</h1>
+</div>
+
+<div class="container">
+
+  <!-- ADMIN PANEL -->
+  <div class="card">
+    <h2>Admin Settings</h2>
+
+    <label>UPI ID</label>
+    <input id="upiInput" placeholder="example@upi" value="demo@upi">
+
+    <label>Amount (₹)</label>
+    <input id="amountInput" type="number" value="3715.31">
+
+    <button id="applyBtn" class="btn primary">Apply</button>
+  </div>
+
+  <!-- DISPLAY AREA -->
+  <div class="card center">
+    <p>Amount Payable</p>
+    <h1 id="amountDisplay" class="amount">₹3715.31</h1>
+
+    <div id="timer" class="timer">05:18</div>
+
+    <p>Scan to Pay (Demo)</p>
+
+    <div id="qrcode"></div>
+
+    <button id="saveQR" class="btn">Save QR Code</button>
+  </div>
+
+  <!-- METHOD -->
+  <div class="card">
+    <h3>Select Method</h3>
+
+    <div class="method">
+      <img src="https://i.imgur.com/2xvQ7Qp.png">
+      <span>Paytm</span>
+    </div>
+
+    <div class="method">
+      <img src="https://i.imgur.com/JP17eZ0.png">
+      <span>PhonePe</span>
+    </div>
+  </div>
+
+  <!-- MANUAL TRANSFER -->
+  <div class="card">
+    <h3>Manual Transfer</h3>
+
+    <label>UPI ID</label>
+    <div class="row">
+      <input id="showUpi" readonly>
+      <button id="copyUpi" class="btn small">Copy</button>
+    </div>
+
+    <label>Amount</label>
+    <div class="row">
+      <input id="showAmount" readonly>
+      <button id="copyAmount" class="btn small">Copy</button>
+    </div>
+
+    <label>Ref No / UTR</label>
+    <input id="utrInput" placeholder="Enter Ref No">
+
+    <button id="submitBtn" class="btn primary">Submit</button>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

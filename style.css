@@ -1,0 +1,103 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f6fb;
+  margin: 0;
+}
+
+.header {
+  background: #4d7cff;
+  color: white;
+  text-align: center;
+  padding: 18px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.container {
+  width: 90%;
+  max-width: 420px;
+  margin: auto;
+  padding: 20px 0;
+}
+
+.card {
+  background: white;
+  padding: 18px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  box-shadow: 0px 6px 15px rgba(0,0,0,0.08);
+}
+
+label {
+  font-size: 14px;
+  margin-top: 10px;
+  display: block;
+}
+
+input {
+  width: 100%;
+  padding: 11px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.amount {
+  color: #2965ff;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.center {
+  text-align: center;
+}
+
+#qrcode {
+  margin: 18px auto;
+}
+
+.btn {
+  padding: 12px;
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 8px;
+  background: #e4e7ff;
+  border: none;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: #4d7cff;
+  color: white;
+  font-weight: bold;
+}
+
+.btn.small {
+  width: auto;
+  padding: 10px 14px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+}
+
+.method {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.method img {
+  width: 40px;
+  margin-right: 10px;
+}
+
+.timer {
+  color: red;
+  font-weight: bold;
+  margin: 10px 0;
+}
