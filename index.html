@@ -1,110 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Payment Gateway</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f6f7fb;
-            margin: 0;
-            padding: 0;
-        }
-        .header {
-            background: #3533cd;
-            padding: 15px;
-            text-align: center;
-            color: white;
-            font-size: 22px;
-            font-weight: bold;
-        }
-        .box {
-            width: 90%;
-            max-width: 380px;
-            background: white;
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0px 0px 8px #00000020;
-        }
-        .title {
-            font-size: 18px;
-            margin-bottom: 10px;
-            text-align: center;
-            font-weight: bold;
-        }
-        .inputBox {
-            padding: 12px;
-            border: 1px solid #ddd;
-            width: 100%;
-            margin-top: 5px;
-            border-radius: 8px;
-            font-size: 17px;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            background: #3533cd;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-        #qrcode {
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Secure Payment Gateway">
+    <title>Payment Gateway | Secure Transactions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>Payment</h1>
+            <div class="timer">05:18</div>
+        </header>
+        
+        <div class="amount-section">
+            <div class="amount-label">Amount Payable</div>
+            <div class="amount">¥3715.31</div>
+        </div>
+        
+        <div class="qr-section">
+            <div class="qr-code">
+                <i class="fas fa-mobile-alt"></i>
+                <p>Use Mobile Scan code to pay</p>
+            </div>
+            <div class="save-qr">Save QR Code</div>
+        </div>
+        
+        <div class="payment-methods">
+            <div class="section-title">Choose a payment method to pay</div>
+            <div class="methods">
+                <div class="method active">
+                    <div class="method-logo">
+                        <i class="fab fa-google-pay"></i>
+                    </div>
+                    <div class="method-name">Google Pay</div>
+                </div>
+                <div class="method">
+                    <div class="method-logo">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="method-name">Paytm</div>
+                </div>
+                <div class="method">
+                    <div class="method-logo">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="method-name">PhonePe</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="manual-transfer">
+            <div class="section-title">Manual transfer</div>
+            
+            <div class="step">
+                <div class="step-title">1. Manual transfer</div>
+                <div class="upi-id">
+                    <span>u****o@axl</span>
+                    <button class="copy-btn">Copy</button>
+                </div>
+                <div class="tip">Tip: Don't save the UPI, get new UPI every time.</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-title">2. Need to enter your 12 Ref No (UTR)</div>
+                <div class="form-group">
+                    <label for="ref-no">Ref No.</label>
+                    <input type="text" id="ref-no" placeholder="Enter reference number">
+                </div>
+                <div class="tip">Tip: Open your UPI wallet and complete the transfer Record your reference No.(Ref No.) after payment.</div>
+                <a href="#" class="help-link">How to find UTR?</a>
+            </div>
+            
+            <button class="submit-btn">Submit</button>
+            
+            <div class="notice">
+                <div class="notice-title">Notice:</div>
+                <p>Please select the payment method you need and make sure your phone has the corresponding wallet software installed.</p>
+                <p>1. Please make sure you have installed the app</p>
+                <p>2. Don't pay for the same link repeatedly</p>
+            </div>
+        </div>
+    </div>
 
-<div class="header">Payment Portal</div>
-
-<div class="box">
-    <div class="title">Payment Details</div>
-
-    <label>UPI ID:</label>
-    <input id="upiID" class="inputBox" readonly>
-
-    <label>Amount:</label>
-    <input id="amount" class="inputBox" readonly>
-
-    <button onclick="generateQR()">Generate QR</button>
-
-    <div id="qrcode"></div>
-</div>
-
-<script>
-    // Get URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const upi = urlParams.get("upi");
-    const amount = urlParams.get("amount");
-
-    // Fill input fields
-    document.getElementById("upiID").value = upi ? upi : "";
-    document.getElementById("amount").value = amount ? amount : "";
-
-    function generateQR() {
-        if (!upi || !amount) {
-            alert("UPI ID or Amount missing in URL!");
-            return;
-        }
-
-        document.getElementById("qrcode").innerHTML = "";
-
-        let upiLink = `upi://pay?pa=${upi}&pn=Payment&am=${amount}`;
-
-        new QRCode(document.getElementById("qrcode"), {
-            text: upiLink,
-            width: 200,
-            height: 200
-        });
-    }
-</script>
-
+    <script src="script.js"></script>
 </body>
 </html>
