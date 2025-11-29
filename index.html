@@ -84,11 +84,16 @@
     const upi = urlParams.get("upi");
     const amount = urlParams.get("amount");
 
-    // Fill boxes
-    document.getElementById("upiID").value = upi ? upi : "Not Provided";
-    document.getElementById("amount").value = amount ? amount : "0";
+    // Fill input fields
+    document.getElementById("upiID").value = upi ? upi : "";
+    document.getElementById("amount").value = amount ? amount : "";
 
     function generateQR() {
+        if (!upi || !amount) {
+            alert("UPI ID or Amount missing in URL!");
+            return;
+        }
+
         document.getElementById("qrcode").innerHTML = "";
 
         let upiLink = `upi://pay?pa=${upi}&pn=Payment&am=${amount}`;
