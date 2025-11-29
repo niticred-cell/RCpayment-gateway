@@ -11,8 +11,8 @@ function updateTimer() {
         timeLeft--;
     } else {
         clearInterval(timerInterval);
-        timerElement.style.background = '#e74c3c';
-        alert('Payment time has expired! Please refresh the page to start again.');
+        timerElement.style.background = '#ff4444';
+        alert('Payment time has expired!');
     }
 }
 
@@ -22,12 +22,8 @@ const timerInterval = setInterval(updateTimer, 1000);
 const methods = document.querySelectorAll('.method');
 methods.forEach(method => {
     method.addEventListener('click', () => {
-        methods.forEach(m => m.classList.remove('active'));
-        method.classList.add('active');
-        
-        // Update payment method in the UI
-        const methodName = method.querySelector('.method-name').textContent;
-        console.log(`Selected payment method: ${methodName}`);
+        methods.forEach(m => m.style.background = '#f8f9fa');
+        method.style.background = '#e3f2fd';
     });
 });
 
@@ -47,38 +43,38 @@ copyBtn.addEventListener('click', () => {
     // Visual feedback
     const originalText = copyBtn.textContent;
     copyBtn.textContent = 'Copied!';
-    copyBtn.style.background = '#2ecc71';
+    copyBtn.style.background = '#4CAF50';
     
     setTimeout(() => {
         copyBtn.textContent = originalText;
-        copyBtn.style.background = '#3498db';
+        copyBtn.style.background = '#2196F3';
     }, 2000);
 });
 
-// Form submission and validation
+// Form validation
 const submitBtn = document.querySelector('.submit-btn');
 const refNoInput = document.getElementById('ref-no');
+const errorMessage = document.querySelector('.error-message');
 
 submitBtn.addEventListener('click', (e) => {
     e.preventDefault();
     
     if (!refNoInput.value.trim()) {
-        refNoInput.style.borderColor = '#e74c3c';
-        showNotification('Ref No is required!', 'error');
+        refNoInput.style.borderColor = '#ff4444';
+        errorMessage.classList.add('show');
     } else if (refNoInput.value.trim().length !== 12) {
-        refNoInput.style.borderColor = '#e74c3c';
-        showNotification('Ref No must be exactly 12 characters!', 'error');
+        refNoInput.style.borderColor = '#ff4444';
+        errorMessage.textContent = 'Ref No must be exactly 12 characters';
+        errorMessage.classList.add('show');
     } else {
-        refNoInput.style.borderColor = '#2ecc71';
-        showNotification('Payment submitted successfully!', 'success');
-        
-        // In a real app, this would submit the form data to a server
-        console.log('Payment submitted with Ref No:', refNoInput.value);
+        refNoInput.style.borderColor = '#4CAF50';
+        errorMessage.classList.remove('show');
+        alert('Payment submitted successfully!');
         
         // Reset form
         setTimeout(() => {
             refNoInput.value = '';
-            refNoInput.style.borderColor = '#e9ecef';
+            refNoInput.style.borderColor = '#ddd';
         }, 2000);
     }
 });
@@ -86,84 +82,15 @@ submitBtn.addEventListener('click', (e) => {
 // Save QR Code functionality
 const saveQrBtn = document.querySelector('.save-qr');
 saveQrBtn.addEventListener('click', () => {
-    showNotification('QR Code saved to your device!', 'success');
-    
-    // In a real app, this would generate and download a QR code image
-    console.log('QR Code save functionality triggered');
+    alert('QR Code saved successfully!');
 });
 
 // How to find UTR link
 const helpLink = document.querySelector('.help-link');
 helpLink.addEventListener('click', (e) => {
     e.preventDefault();
-    showNotification('Opening UTR guide...', 'info');
-    
-    // In a real app, this would open a modal or redirect to a help page
-    setTimeout(() => {
-        alert('To find your UTR number:\n1. Open your bank app\n2. Go to transaction history\n3. Find the payment transaction\n4. Look for "UTR" or "Reference Number"');
-    }, 500);
+    alert('To find your UTR number:\n1. Open your bank app\n2. Go to transaction history\n3. Find the payment transaction\n4. Look for "UTR" or "Reference Number"');
 });
-
-// Notification system
-function showNotification(message, type) {
-    // Remove existing notification
-    const existingNotification = document.querySelector('.notification');
-    if (existingNotification) {
-        existingNotification.remove();
-    }
-    
-    // Create new notification
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    
-    // Add styles for notification
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        border-radius: 8px;
-        color: white;
-        font-weight: bold;
-        z-index: 1000;
-        animation: slideIn 0.3s ease-out;
-        max-width: 300px;
-    `;
-    
-    // Set background color based on type
-    const colors = {
-        success: '#2ecc71',
-        error: '#e74c3c',
-        info: '#3498db'
-    };
-    
-    notification.style.background = colors[type] || colors.info;
-    
-    // Add keyframe animation
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-    `;
-    document.head.appendChild(style);
-    
-    document.body.appendChild(notification);
-    
-    // Remove notification after 3 seconds
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.style.animation = 'slideOut 0.3s ease-in';
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 300);
-        }
-    }, 3000);
-}
 
 // Input validation for Ref No
 refNoInput.addEventListener('input', (e) => {
@@ -177,8 +104,9 @@ refNoInput.addEventListener('input', (e) => {
         e.target.value = value.slice(0, 12);
     }
     
-    // Reset border color when user starts typing
+    // Reset border color and error when user starts typing
     if (value.length > 0) {
-        e.target.style.borderColor = '#e9ecef';
+        e.target.style.borderColor = '#ddd';
+        errorMessage.classList.remove('show');
     }
 });
