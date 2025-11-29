@@ -1,184 +1,438 @@
-// Timer functionality
-let timeLeft = 5 * 60 + 18; // 5 minutes and 18 seconds
-const timerElement = document.querySelector('.timer');
-
-function updateTimer() {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    
-    if (timeLeft > 0) {
-        timeLeft--;
-    } else {
-        clearInterval(timerInterval);
-        timerElement.style.background = '#e74c3c';
-        alert('Payment time has expired! Please refresh the page to start again.');
-    }
-}
-
-const timerInterval = setInterval(updateTimer, 1000);
-
-// Payment method selection
-const methods = document.querySelectorAll('.method');
-methods.forEach(method => {
-    method.addEventListener('click', () => {
-        methods.forEach(m => m.classList.remove('active'));
-        method.classList.add('active');
-        
-        // Update payment method in the UI
-        const methodName = method.querySelector('.method-name').textContent;
-        console.log(`Selected payment method: ${methodName}`);
-    });
-});
-
-// Copy UPI ID functionality
-const copyBtn = document.querySelector('.copy-btn');
-copyBtn.addEventListener('click', () => {
-    const upiId = 'u****o@axl';
-    
-    // Create a temporary textarea to copy text
-    const textArea = document.createElement('textarea');
-    textArea.value = upiId;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-    
-    // Visual feedback
-    const originalText = copyBtn.textContent;
-    copyBtn.textContent = 'Copied!';
-    copyBtn.style.background = '#2ecc71';
-    
-    setTimeout(() => {
-        copyBtn.textContent = originalText;
-        copyBtn.style.background = '#3498db';
-    }, 2000);
-});
-
-// Form submission and validation
-const submitBtn = document.querySelector('.submit-btn');
-const refNoInput = document.getElementById('ref-no');
-
-submitBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    
-    if (!refNoInput.value.trim()) {
-        refNoInput.style.borderColor = '#e74c3c';
-        showNotification('Ref No is required!', 'error');
-    } else if (refNoInput.value.trim().length !== 12) {
-        refNoInput.style.borderColor = '#e74c3c';
-        showNotification('Ref No must be exactly 12 characters!', 'error');
-    } else {
-        refNoInput.style.borderColor = '#2ecc71';
-        showNotification('Payment submitted successfully!', 'success');
-        
-        // In a real app, this would submit the form data to a server
-        console.log('Payment submitted with Ref No:', refNoInput.value);
-        
-        // Reset form
-        setTimeout(() => {
-            refNoInput.value = '';
-            refNoInput.style.borderColor = '#e9ecef';
-        }, 2000);
-    }
-});
-
-// Save QR Code functionality
-const saveQrBtn = document.querySelector('.save-qr');
-saveQrBtn.addEventListener('click', () => {
-    showNotification('QR Code saved to your device!', 'success');
-    
-    // In a real app, this would generate and download a QR code image
-    console.log('QR Code save functionality triggered');
-});
-
-// How to find UTR link
-const helpLink = document.querySelector('.help-link');
-helpLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    showNotification('Opening UTR guide...', 'info');
-    
-    // In a real app, this would open a modal or redirect to a help page
-    setTimeout(() => {
-        alert('To find your UTR number:\n1. Open your bank app\n2. Go to transaction history\n3. Find the payment transaction\n4. Look for "UTR" or "Reference Number"');
-    }, 500);
-});
-
-// Notification system
-function showNotification(message, type) {
-    // Remove existing notification
-    const existingNotification = document.querySelector('.notification');
-    if (existingNotification) {
-        existingNotification.remove();
-    }
-    
-    // Create new notification
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    
-    // Add styles for notification
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        border-radius: 8px;
-        color: white;
-        font-weight: bold;
-        z-index: 1000;
-        animation: slideIn 0.3s ease-out;
-        max-width: 300px;
-    `;
-    
-    // Set background color based on type
-    const colors = {
-        success: '#2ecc71',
-        error: '#e74c3c',
-        info: '#3498db'
-    };
-    
-    notification.style.background = colors[type] || colors.info;
-    
-    // Add keyframe animation
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>payment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
-    `;
-    document.head.appendChild(style);
-    
-    document.body.appendChild(notification);
-    
-    // Remove notification after 3 seconds
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.style.animation = 'slideOut 0.3s ease-in';
+
+        body {
+            background: #f0f0f0;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: normal;
+            color: #333;
+            text-transform: lowercase;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: #ff4444;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .amount-section {
+            padding: 25px 20px;
+            text-align: center;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .amount-label {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .amount {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .qr-section {
+            padding: 25px 20px;
+            text-align: center;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .qr-placeholder {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            background: #f8f8f8;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-text {
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .save-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .payment-methods {
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .methods {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .method {
+            padding: 15px;
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .manual-transfer {
+            padding: 20px;
+            background: white;
+        }
+
+        .step {
+            margin-bottom: 25px;
+        }
+
+        .step-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .upi-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .upi-id {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .copy-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .tip {
+            background: #fff8e1;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 3px solid #ffc107;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .ref-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .ref-input::placeholder {
+            color: #ff4444;
+        }
+
+        .help-link {
+            color: #2196F3;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+
+        .instructions {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .instructions p {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .notice {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 3px solid #2196F3;
+        }
+
+        .notice-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .notice-text {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>payment</h1>
+            <div class="timer">05:18</div>
+        </div>
+
+        <div class="amount-section">
+            <div class="amount-label">Amount Payable</div>
+            <div class="amount">¥3715.31</div>
+        </div>
+
+        <div class="qr-section">
+            <div class="qr-placeholder">
+                <div class="qr-text">Use Mobile Scan code to pay</div>
+            </div>
+            <button class="save-btn">Save QR Code</button>
+        </div>
+
+        <div class="payment-methods">
+            <div class="section-title">Choose a payment method to pay</div>
+            <div class="methods">
+                <div class="method">Paytm | Paytm</div>
+                <div class="method">phonepe</div>
+            </div>
+        </div>
+
+        <div class="manual-transfer">
+            <div class="section-title">Manual transfer</div>
+            
+            <div class="step">
+                <div class="step-title">1. Manual transfer</div>
+                <div class="upi-container">
+                    <span class="upi-id">u****o@axl</span>
+                    <button class="copy-btn">Copy</button>
+                </div>
+                <div class="tip">Tip: Don't save the UPI, get new UPI every time.</div>
+            </div>
+
+            <div class="step">
+                <div class="step-title">2. Need to enter your 12 Ref No (UTR)</div>
+                <div class="input-group">
+                    <div class="label">Ref No.</div>
+                    <input type="text" class="ref-input" placeholder="Ref No is required">
+                </div>
+                <div class="tip">Tip: Open your UPI wallet and complete the transfer Record your reference No.(Ref No.) after payment.</div>
+                <a href="#" class="help-link">How to find utr?</a>
+            </div>
+
+            <button class="submit-btn">Submit</button>
+
+            <div class="instructions">
+                <p>1. Please make sure you have installed the app</p>
+                <p>2. Don't pay for the same link repeatedly</p>
+            </div>
+
+            <div class="notice">
+                <div class="notice-title">Notice:</div>
+                <div class="notice-text">Please select the payment method you need and make sure your phone has the corresponding wallet software installed.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Timer functionality
+        let timeLeft = 5 * 60 + 18; // 5 minutes and 18 seconds
+        const timerElement = document.querySelector('.timer');
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft > 0) {
+                timeLeft--;
+            } else {
+                clearInterval(timerInterval);
+                timerElement.style.background = '#ff4444';
+                alert('Payment time has expired!');
+            }
+        }
+
+        const timerInterval = setInterval(updateTimer, 1000);
+
+        // Payment method selection
+        const methods = document.querySelectorAll('.method');
+        methods.forEach(method => {
+            method.addEventListener('click', () => {
+                methods.forEach(m => m.style.background = '#f8f8f8');
+                method.style.background = '#e3f2fd';
+            });
+        });
+
+        // Copy UPI ID functionality
+        const copyBtn = document.querySelector('.copy-btn');
+        copyBtn.addEventListener('click', () => {
+            const upiId = 'u****o@axl';
+            
+            // Create a temporary textarea to copy text
+            const textArea = document.createElement('textarea');
+            textArea.value = upiId;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            // Visual feedback
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = 'Copied!';
+            copyBtn.style.background = '#4CAF50';
+            
             setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 300);
-        }
-    }, 3000);
-}
+                copyBtn.textContent = originalText;
+                copyBtn.style.background = '#2196F3';
+            }, 2000);
+        });
 
-// Input validation for Ref No
-refNoInput.addEventListener('input', (e) => {
-    const value = e.target.value;
-    
-    // Only allow numbers and letters
-    e.target.value = value.replace(/[^a-zA-Z0-9]/g, '');
-    
-    // Limit to 12 characters
-    if (value.length > 12) {
-        e.target.value = value.slice(0, 12);
-    }
-    
-    // Reset border color when user starts typing
-    if (value.length > 0) {
-        e.target.style.borderColor = '#e9ecef';
-    }
-});
+        // Form validation
+        const submitBtn = document.querySelector('.submit-btn');
+        const refNoInput = document.querySelector('.ref-input');
+
+        submitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            if (!refNoInput.value.trim()) {
+                refNoInput.style.borderColor = '#ff4444';
+                alert('Ref No is required');
+            } else if (refNoInput.value.trim().length !== 12) {
+                refNoInput.style.borderColor = '#ff4444';
+                alert('Ref No must be exactly 12 characters');
+            } else {
+                refNoInput.style.borderColor = '#4CAF50';
+                alert('Payment submitted successfully!');
+                
+                // Reset form
+                setTimeout(() => {
+                    refNoInput.value = '';
+                    refNoInput.style.borderColor = '#e0e0e0';
+                }, 2000);
+            }
+        });
+
+        // Save QR Code functionality
+        const saveQrBtn = document.querySelector('.save-btn');
+        saveQrBtn.addEventListener('click', () => {
+            alert('QR Code saved successfully!');
+        });
+
+        // How to find UTR link
+        const helpLink = document.querySelector('.help-link');
+        helpLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('To find your UTR number:\n1. Open your bank app\n2. Go to transaction history\n3. Find the payment transaction\n4. Look for "UTR" or "Reference Number"');
+        });
+
+        // Input validation for Ref No
+        refNoInput.addEventListener('input', (e) => {
+            const value = e.target.value;
+            
+            // Only allow numbers and letters
+            e.target.value = value.replace(/[^a-zA-Z0-9]/g, '');
+            
+            // Limit to 12 characters
+            if (value.length > 12) {
+                e.target.value = value.slice(0, 12);
+            }
+            
+            // Reset border color when user starts typing
+            if (value.length > 0) {
+                e.target.style.borderColor = '#e0e0e0';
+            }
+        });
+    </script>
+</body>
+</html>
