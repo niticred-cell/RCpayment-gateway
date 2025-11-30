@@ -1,93 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tutorial Payment Demo</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Demo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
 <!-- TOP HEADER -->
 <div class="top-header">
-  <div class="pay-title">Amount Payable</div>
-  <div class="pay-amount" id="amountDisplay">₹3715.31</div>
-  <div class="timer" id="timer">10:00</div>
+    <div class="pay-title">Amount Payable</div>
+    <div class="pay-amount" id="amountDisplay">₹3715.31</div>
+    <div class="timer" id="timer">10:00</div>
 </div>
 
 <div class="container">
 
-  <!-- TABS -->
-  <div class="tabs">
-    <button class="tab active" id="tabDirect">Direct Payment</button>
-    <button class="tab" id="tabQR">QR Code</button>
-  </div>
-
-  <!-- DIRECT PAYMENT SECTION -->
-  <div id="directSection">
-    
-    <!-- PAYMENT METHODS -->
-    <div class="methods">
-      <div class="method active" id="paytm">
-        <!-- Using SVG data for Paytm -->
-        <svg width="40" height="40" viewBox="0 0 40 40">
-          <rect width="40" height="40" fill="#002E6E" rx="8"/>
-          <text x="20" y="24" text-anchor="middle" fill="white" font-weight="bold">Paytm</text>
-        </svg>
-        <span>Paytm</span>
-      </div>
-      <div class="method" id="phonepe">
-        <!-- Using SVG data for PhonePe -->
-        <svg width="40" height="40" viewBox="0 0 40 40">
-          <rect width="40" height="40" fill="#5F259F" rx="8"/>
-          <text x="20" y="24" text-anchor="middle" fill="white" font-weight="bold">PhonePe</text>
-        </svg>
-        <span>PhonePe</span>
-      </div>
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab active" id="tabDirect">Direct Payment</button>
+        <button class="tab" id="tabQR">QR Code</button>
     </div>
 
-    <!-- WARNING BOX -->
-    <div class="warning">
-      ⚠️ Make sure to send the exact amount shown above.
+    <!-- DIRECT PAYMENT SECTION -->
+    <div id="directSection">
+        
+        <!-- PAYMENT METHODS -->
+        <div class="methods">
+            <div class="method active" id="paytm">
+                <!-- Paytm SVG Icon -->
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <rect width="40" height="40" fill="#002E6E" rx="8"/>
+                    <text x="20" y="24" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Paytm</text>
+                </svg>
+                <span>Paytm</span>
+            </div>
+            <div class="method" id="phonepe">
+                <!-- PhonePe SVG Icon -->
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <rect width="40" height="40" fill="#5F259F" rx="8"/>
+                    <text x="20" y="24" text-anchor="middle" fill="white" font-weight="bold" font-size="10">PhonePe</text>
+                </svg>
+                <span>PhonePe</span>
+            </div>
+        </div>
+
+        <!-- WARNING BOX -->
+        <div class="warning">
+            ⚠️ Make sure to send the exact amount shown above.
+        </div>
+
+        <!-- MANUAL TRANSFER CARD -->
+        <div class="card">
+            <div class="step-title">Step 1: Copy UPI ID</div>
+            <div class="copy-box">
+                <input type="text" id="upiID" value="7488570438-2@ikwik" readonly>
+                <button onclick="copyUPI()">Copy</button>
+            </div>
+
+            <div class="step-title">Step 2: Copy Amount</div>
+            <div class="copy-box">
+                <input type="text" id="amountBox" value="3715.31" readonly>
+                <button onclick="copyAmount()">Copy</button>
+            </div>
+
+            <div class="step-title">Step 3: Enter UTR/Reference No</div>
+            <div class="utr-box">
+                <input type="text" id="utrInput" placeholder="Enter UTR number from your bank app">
+                <button onclick="submitUTR()">Submit</button>
+            </div>
+        </div>
     </div>
 
-    <!-- MANUAL TRANSFER CARD -->
-    <div class="card">
-      <div class="step-title">Step 1: Copy UPI ID</div>
-      <div class="copy-box">
-        <input type="text" id="upiID" value="7488570438-2@ikwik" readonly>
-        <button onclick="copyUPI()">Copy</button>
-      </div>
-
-      <div class="step-title">Step 2: Copy Amount</div>
-      <div class="copy-box">
-        <input type="text" id="amountBox" value="3715.31" readonly>
-        <button onclick="copyAmount()">Copy</button>
-      </div>
-
-      <div class="step-title">Step 3: Enter UTR/Reference No</div>
-      <div class="utr-box">
-        <input type="text" id="utrInput" placeholder="Enter UTR number from your bank app">
-        <button onclick="submitUTR()">Submit</button>
-      </div>
+    <!-- QR CODE SECTION -->
+    <div id="qrSection" style="display: none;">
+        <div class="card center">
+            <div class="step-title">Scan QR Code to Pay</div>
+            <div id="qrcode"></div>
+            <p>Scan this QR code with any UPI app</p>
+        </div>
     </div>
-  </div>
-
-  <!-- QR CODE SECTION -->
-  <div id="qrSection" style="display: none;">
-    <div class="card center">
-      <div class="step-title">Scan QR Code to Pay</div>
-      <div id="qrcode"></div>
-      <p>Scan this QR code with any UPI app</p>
-    </div>
-  </div>
 
 </div>
 
 <!-- FOOTER LOGOS -->
 <div class="footer-logos">
-  <!-- You can add footer logos here if needed -->
+    <!-- Footer content can be added here -->
 </div>
 
 <script src="script.js"></script>
