@@ -4,7 +4,180 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Demo</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* EMERGENCY CSS - PASTE THIS DIRECTLY IN HTML */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        /* TOP HEADER */
+        .top-header {
+            background: linear-gradient(to right, #7a3cff, #a16bff);
+            text-align: center;
+            padding: 25px 0;
+            color: white;
+        }
+        .pay-title { 
+            font-size: 20px; 
+        }
+        .pay-amount { 
+            font-size: 38px; 
+            font-weight: bold; 
+            margin-top: 5px; 
+        }
+        .timer { 
+            font-size: 18px; 
+            margin-top: 8px; 
+        }
+
+        /* CONTAINER */
+        .container {
+            width: 90%;
+            max-width: 500px;
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            background: #e6d8ff;
+            padding: 5px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .tab.active {
+            background: white;
+            border-radius: 6px;
+            color: #7a3cff;
+            font-weight: bold;
+        }
+
+        /* METHODS */
+        .methods {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .method {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #bfa6ff;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: white;
+        }
+        .method.active {
+            border: 3px solid #7a3cff;
+            background: #efe6ff;
+        }
+
+        /* WARNING BOX */
+        .warning {
+            background: #ffe9c2;
+            color: #7a3c00;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .step-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* COPY FIELDS */
+        .copy-box {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        .copy-box input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px 0 0 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+        .copy-box button {
+            padding: 12px 15px;
+            border: none;
+            background: #7a3cff;
+            color: white;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* UTR FIELD */
+        .utr-box {
+            display: flex;
+            margin-top: 10px;
+        }
+        .utr-box input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px 0 0 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+        .utr-box button {
+            padding: 12px 15px;
+            border: none;
+            background: #7a3cff;
+            color: white;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .center { 
+            text-align: center; 
+        }
+
+        /* PAYMENT ICONS */
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .paytm-icon {
+            background: #002E6E;
+        }
+        .phonepe-icon {
+            background: #5F259F;
+        }
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
@@ -30,19 +203,11 @@
         <!-- PAYMENT METHODS -->
         <div class="methods">
             <div class="method active" id="paytm">
-                <!-- Paytm SVG Icon -->
-                <svg width="40" height="40" viewBox="0 0 40 40">
-                    <rect width="40" height="40" fill="#002E6E" rx="8"/>
-                    <text x="20" y="24" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Paytm</text>
-                </svg>
+                <div class="payment-icon paytm-icon">Paytm</div>
                 <span>Paytm</span>
             </div>
             <div class="method" id="phonepe">
-                <!-- PhonePe SVG Icon -->
-                <svg width="40" height="40" viewBox="0 0 40 40">
-                    <rect width="40" height="40" fill="#5F259F" rx="8"/>
-                    <text x="20" y="24" text-anchor="middle" fill="white" font-weight="bold" font-size="10">PhonePe</text>
-                </svg>
+                <div class="payment-icon phonepe-icon">PhonePe</div>
                 <span>PhonePe</span>
             </div>
         </div>
@@ -85,11 +250,75 @@
 
 </div>
 
-<!-- FOOTER LOGOS -->
-<div class="footer-logos">
-    <!-- Footer content can be added here -->
-</div>
+<script>
+    // ------- TIMER -------
+    let sec = 600;
+    function updateTimer() {
+        let m = String(Math.floor(sec / 60)).padStart(2, '0');
+        let s = String(sec % 60).padStart(2, '0');
+        document.getElementById("timer").innerHTML = `${m}:${s}`;
+        if (sec > 0) sec--;
+    }
+    setInterval(updateTimer, 1000);
 
-<script src="script.js"></script>
+    // ------- TABS -------
+    document.getElementById("tabDirect").onclick = function () {
+        this.classList.add("active");
+        document.getElementById("tabQR").classList.remove("active");
+
+        document.getElementById("directSection").style.display = "block";
+        document.getElementById("qrSection").style.display = "none";
+    };
+
+    document.getElementById("tabQR").onclick = function () {
+        this.classList.add("active");
+        document.getElementById("tabDirect").classList.remove("active");
+
+        document.getElementById("directSection").style.display = "none";
+        document.getElementById("qrSection").style.display = "block";
+    };
+
+    // ------- METHOD SELECTION -------
+    document.getElementById("paytm").onclick = function() {
+        document.getElementById("paytm").classList.add("active");
+        document.getElementById("phonepe").classList.remove("active");
+    };
+
+    document.getElementById("phonepe").onclick = function() {
+        document.getElementById("phonepe").classList.add("active");
+        document.getElementById("paytm").classList.remove("active");
+    };
+
+    // ------- COPY FUNCTIONS -------
+    function copyUPI() {
+        navigator.clipboard.writeText(document.getElementById("upiID").value);
+        alert("UPI ID Copied!");
+    }
+
+    function copyAmount() {
+        navigator.clipboard.writeText(document.getElementById("amountBox").value);
+        alert("Amount Copied!");
+    }
+
+    // ------- SUBMIT UTR -------
+    function submitUTR() {
+        let utr = document.getElementById("utrInput").value;
+        if (utr.length < 5) {
+            alert("Enter a valid UTR number!");
+            return;
+        }
+        alert("UTR Submitted: " + utr);
+        document.getElementById("utrInput").value = "";
+    }
+
+    // ------- QR CODE -------
+    document.addEventListener('DOMContentLoaded', function() {
+        new QRCode(document.getElementById("qrcode"), {
+            text: "upi://pay?pa=7488570438-2@ikwik&pn=Payment&am=3000",
+            width: 200,
+            height: 200
+        });
+    });
+</script>
 </body>
 </html>
