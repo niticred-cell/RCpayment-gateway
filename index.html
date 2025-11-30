@@ -238,14 +238,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 15px;
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 15px;
         }
         
         #qrcode img {
             border-radius: 8px;
+            display: block;
         }
 
         .center { 
@@ -258,11 +259,61 @@
             margin-top: 10px;
         }
 
-        /* HIDDEN CLASS */
-        .hidden {
-            display: none !important;
+        /* URL BUILDER */
+        .url-builder {
+            background: #e8f4ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #007bff;
+        }
+        
+        .url-input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .url-display {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px dashed #007bff;
+            word-break: break-all;
+            font-size: 14px;
+            color: #007bff;
+        }
+        
+        .copy-url-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+            margin-top: 8px;
+        }
+        
+        .copy-url-btn:hover {
+            background: #0056b3;
+        }
+
+        /* LOADING STATE */
+        .loading {
+            color: #666;
+            font-size: 16px;
+            text-align: center;
+            padding: 20px;
         }
     </style>
+    <!-- SIMPLE QR CODE LIBRARY -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode.js@0.0.1/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -321,6 +372,24 @@
                 <button onclick="submitUTR()">Submit</button>
             </div>
         </div>
+
+        <!-- URL BUILDER CARD -->
+        <div class="card">
+            <div class="step-title">🔗 Create Custom Payment Link</div>
+            <div class="url-builder">
+                <input type="text" class="url-input" id="customUpi" placeholder="Enter UPI ID (e.g., yourname@paytm)" value="7488570438-2@ikwik">
+                <input type="number" class="url-input" id="customAmount" placeholder="Enter Amount (e.g., 1000)" value="3715.31">
+                
+                <div class="url-display" id="generatedUrl">
+                    https://yourusername.github.io/repo-name/?upi=7488570438-2@ikwik&amount=3715.31
+                </div>
+                
+                <button class="copy-url-btn" onclick="generateAndCopyURL()">📋 Copy Custom Link</button>
+            </div>
+            <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                Share this link to pre-fill UPI ID and Amount
+            </p>
+        </div>
     </div>
 
     <!-- QR CODE SECTION -->
@@ -328,16 +397,24 @@
         <div class="card center">
             <div class="step-title">Scan QR Code to Pay</div>
             <div class="qr-container">
-                <div id="qrcode"></div>
+                <div id="qrcode">
+                    <div class="loading">Generating QR Code...</div>
+                </div>
             </div>
             <p class="qr-instruction">Scan this QR code with any UPI app</p>
+            
+            <!-- QR Code URL Info -->
+            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <div style="font-size: 14px; color: #666; margin-bottom: 8px;">Current Payment Details:</div>
+                <div style="font-size: 12px; color: #333;">
+                    UPI: <span id="qrUpiInfo">7488570438-2@ikwik</span><br>
+                    Amount: ₹<span id="qrAmountInfo">3715.31</span>
+                </div>
+            </div>
         </div>
     </div>
 
 </div>
-
-<!-- Load QRCode.js from CDN -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
 <script>
     // ======== CONFIGURATION ========
@@ -360,41 +437,96 @@
         document.getElementById('upiID').value = upi;
         document.getElementById('amountBox').value = amount;
         document.getElementById('amountDisplay').textContent = `₹${amount}`;
+        document.getElementById('customUpi').value = upi;
+        document.getElementById('customAmount').value = amount;
         
-        console.log('Initialized with:', { upi, amount });
+        // Update QR info display
+        document.getElementById('qrUpiInfo').textContent = upi;
+        document.getElementById('qrAmountInfo').textContent = amount;
         
-        // Generate QR code
+        console.log('Initialized with URL parameters:', { upi, amount });
+        
+        // Generate initial QR code
         generateQRCode(upi, amount);
+        
+        // Update URL display
+        updateUrlDisplay();
     }
 
-    // ======== QR CODE GENERATION ========
+    // ======== QR CODE GENERATION - SIMPLE & RELIABLE ========
     function generateQRCode(upi, amount) {
         const qrContainer = document.getElementById('qrcode');
-        qrContainer.innerHTML = ''; // Clear previous QR code
         
+        // Create UPI payment URL
         const upiUrl = `upi://pay?pa=${upi}&pn=Recipient&am=${amount}&cu=INR`;
         
-        QRCode.toCanvas(qrContainer, upiUrl, {
-            width: 200,
-            height: 200,
-            margin: 1,
-            color: {
-                dark: '#000000',
-                light: '#FFFFFF'
-            }
-        }, function(error) {
-            if (error) {
-                console.error('QR Code generation failed:', error);
-                qrContainer.innerHTML = `
-                    <div style="text-align: center; color: #666; padding: 20px;">
-                        <div style="font-size: 48px; margin-bottom: 10px;">📱</div>
-                        <div>QR Code failed to load</div>
-                        <div style="font-size: 12px; margin-top: 5px;">Please try refreshing</div>
-                    </div>
-                `;
-            } else {
+        console.log('Generating QR for:', upiUrl);
+        
+        // Clear previous QR code
+        qrContainer.innerHTML = '';
+        
+        try {
+            // Use the QRCode library that's actually loaded
+            if (typeof QRCode !== 'undefined') {
+                new QRCode(qrContainer, {
+                    text: upiUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
                 console.log('QR Code generated successfully');
+            } else {
+                throw new Error('QRCode library not loaded');
             }
+        } catch (error) {
+            console.error('QR Code generation failed:', error);
+            // Fallback: Show UPI details
+            qrContainer.innerHTML = `
+                <div style="text-align: center; color: #666; padding: 20px;">
+                    <div style="font-size: 48px; margin-bottom: 10px;">📱</div>
+                    <div>Manual Payment Required</div>
+                    <div style="font-size: 12px; margin-top: 10px; background: white; padding: 10px; border-radius: 6px;">
+                        <strong>UPI:</strong> ${upi}<br>
+                        <strong>Amount:</strong> ₹${amount}
+                    </div>
+                    <div style="font-size: 10px; margin-top: 8px; color: #999;">
+                        Copy details above to your UPI app
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // ======== URL BUILDER FUNCTIONS ========
+    function updateUrlDisplay() {
+        const upi = document.getElementById('customUpi').value;
+        const amount = document.getElementById('customAmount').value;
+        
+        // Get current base URL
+        const baseUrl = window.location.origin + window.location.pathname;
+        const customUrl = `${baseUrl}?upi=${encodeURIComponent(upi)}&amount=${encodeURIComponent(amount)}`;
+        
+        document.getElementById('generatedUrl').textContent = customUrl;
+        return customUrl;
+    }
+
+    function generateAndCopyURL() {
+        const customUrl = updateUrlDisplay();
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(customUrl).then(() => {
+            alert('✅ Custom payment link copied to clipboard!\n\nShare this link with others.');
+        }).catch(() => {
+            // Fallback for older browsers
+            const tempInput = document.createElement('input');
+            tempInput.value = customUrl;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('✅ Custom payment link copied!');
         });
     }
 
@@ -411,7 +543,6 @@
         if (seconds > 0) {
             seconds--;
         } else {
-            // Timer completed
             document.getElementById('timer').style.color = '#ff4444';
         }
     }
@@ -435,6 +566,11 @@
             tabDirect.classList.remove('active');
             directSection.style.display = 'none';
             qrSection.style.display = 'block';
+            
+            // Update QR code with current values when switching to QR tab
+            const upi = document.getElementById('upiID').value;
+            const amount = document.getElementById('amountBox').value;
+            generateQRCode(upi, amount);
         });
     }
 
@@ -458,27 +594,25 @@
     function copyUPI() {
         const upiInput = document.getElementById('upiID');
         upiInput.select();
-        upiInput.setSelectionRange(0, 99999);
         
-        try {
-            navigator.clipboard.writeText(upiInput.value);
+        navigator.clipboard.writeText(upiInput.value).then(() => {
             alert('✅ UPI ID copied to clipboard!');
-        } catch (err) {
-            alert('❌ Failed to copy UPI ID');
-        }
+        }).catch(() => {
+            document.execCommand('copy');
+            alert('✅ UPI ID copied!');
+        });
     }
 
     function copyAmount() {
         const amountInput = document.getElementById('amountBox');
         amountInput.select();
-        amountInput.setSelectionRange(0, 99999);
         
-        try {
-            navigator.clipboard.writeText(amountInput.value);
+        navigator.clipboard.writeText(amountInput.value).then(() => {
             alert('✅ Amount copied to clipboard!');
-        } catch (err) {
-            alert('❌ Failed to copy amount');
-        }
+        }).catch(() => {
+            document.execCommand('copy');
+            alert('✅ Amount copied!');
+        });
     }
 
     // ======== UTR SUBMISSION ========
@@ -496,6 +630,22 @@
         utrInput.value = '';
     }
 
+    // ======== REAL-TIME URL UPDATES ========
+    document.getElementById('customUpi').addEventListener('input', function() {
+        const upi = this.value;
+        document.getElementById('upiID').value = upi;
+        document.getElementById('qrUpiInfo').textContent = upi;
+        updateUrlDisplay();
+    });
+
+    document.getElementById('customAmount').addEventListener('input', function() {
+        const amount = this.value;
+        document.getElementById('amountBox').value = amount;
+        document.getElementById('amountDisplay').textContent = `₹${amount}`;
+        document.getElementById('qrAmountInfo').textContent = amount;
+        updateUrlDisplay();
+    });
+
     // ======== INITIALIZATION ========
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Payment Gateway Initializing...');
@@ -509,26 +659,10 @@
         
         // Start timer
         setInterval(updateTimer, 1000);
-        updateTimer(); // Initial call
+        updateTimer();
         
         console.log('Payment Gateway Ready!');
-        
-        // Log current parameters for debugging
-        const params = getUrlParams();
-        console.log('Current Parameters:', params);
     });
-
-    // ======== DEBUGGING HELP ========
-    window.debugPayment = function() {
-        const params = getUrlParams();
-        console.log('Debug Info:', {
-            urlParams: params,
-            currentUPI: document.getElementById('upiID').value,
-            currentAmount: document.getElementById('amountBox').value,
-            qrContainer: document.getElementById('qrcode').innerHTML.length
-        });
-        alert(`Debug Info:\nUPI: ${params.upi}\nAmount: ${params.amount}`);
-    };
 </script>
 
 </body>
