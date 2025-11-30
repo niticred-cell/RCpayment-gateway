@@ -177,6 +177,24 @@
         .phonepe-icon {
             background: #5F259F;
         }
+
+        /* QR CODE CENTERING */
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            min-height: 220px;
+        }
+        #qrcode {
+            display: flex;
+            justify-content: center;
+        }
+        #qrcode canvas {
+            border: 10px solid white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -243,7 +261,9 @@
     <div id="qrSection" style="display: none;">
         <div class="card center">
             <div class="step-title">Scan QR Code to Pay</div>
-            <div id="qrcode"></div>
+            <div class="qr-container">
+                <div id="qrcode"></div>
+            </div>
             <p>Scan this QR code with any UPI app</p>
         </div>
     </div>
@@ -251,6 +271,56 @@
 </div>
 
 <script>
+    // ------- GET URL PARAMETERS -------
+    function getUrlParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return {
+            upi: urlParams.get('upi'),
+            amount: urlParams.get('amount')
+        };
+    }
+
+    // ------- INITIALIZE WITH URL PARAMETERS -------
+    function initializeFromUrl() {
+        const params = getUrlParams();
+        
+        if (params.upi) {
+            document.getElementById('upiID').value = params.upi;
+        }
+        
+        if (params.amount) {
+            const amount = parseFloat(params.amount);
+            if (!isNaN(amount)) {
+                document.getElementById('amountDisplay').textContent = '₹' + amount;
+                document.getElementById('amountBox').value = amount;
+            }
+        }
+        
+        // Update QR code with current values
+        updateQRCode();
+    }
+
+    // ------- UPDATE QR CODE -------
+    function updateQRCode() {
+        const upi = document.getElementById('upiID').value;
+        const amount = document.getElementById('amountBox').value;
+        
+        const qrText = `upi://pay?pa=${upi}&pn=Payment&am=${amount}&cu=INR`;
+        
+        // Clear previous QR code
+        document.getElementById('qrcode').innerHTML = '';
+        
+        // Generate new QR code
+        new QRCode(document.getElementById('qrcode'), {
+            text: qrText,
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }
+
     // ------- TIMER -------
     let sec = 600;
     function updateTimer() {
@@ -311,13 +381,19 @@
         document.getElementById("utrInput").value = "";
     }
 
-    // ------- QR CODE -------
+    // ------- INITIALIZE PAGE -------
     document.addEventListener('DOMContentLoaded', function() {
-        new QRCode(document.getElementById("qrcode"), {
-            text: "upi://pay?pa=7488570438-2@ikwik&pn=Payment&am=3000",
-            width: 200,
-            height: 200
-        });
+        // Initialize from URL parameters
+        initializeFromUrl();
+        
+        // Set initial active tab
+        document.getElementById("tabDirect").classList.add("active");
+        document.getElementById("directSection").style.display = "block";
+        document.getElementById("qrSection").style.display = "none";
+        
+        // Set initial active method
+        document.getElementById("paytm").classList.add("active");
+        document.getElementById("phonepe").classList.remove("active");
     });
 </script>
 </body>
