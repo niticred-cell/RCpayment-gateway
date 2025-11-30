@@ -3,77 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Demo</title>
+    <title>Payment Gateway</title>
     <style>
-        /* EMERGENCY CSS - PASTE THIS DIRECTLY IN HTML */
-        body {
+        /* RESET & BASE STYLES */
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
             font-family: Arial, sans-serif;
             background: #f5f5f5;
+            line-height: 1.6;
         }
 
         /* TOP HEADER */
         .top-header {
             background: linear-gradient(to right, #7a3cff, #a16bff);
             text-align: center;
-            padding: 25px 0;
+            padding: 25px 20px;
             color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+        
         .pay-title { 
-            font-size: 20px; 
+            font-size: 18px;
+            margin-bottom: 5px;
         }
+        
         .pay-amount { 
-            font-size: 38px; 
+            font-size: 36px; 
             font-weight: bold; 
-            margin-top: 5px; 
+            margin: 10px 0;
         }
+        
         .timer { 
-            font-size: 18px; 
-            margin-top: 8px; 
+            font-size: 16px;
+            font-weight: bold;
         }
 
         /* CONTAINER */
         .container {
             width: 90%;
             max-width: 500px;
-            margin: auto;
-            margin-top: 20px;
+            margin: 20px auto;
+            padding: 0 10px;
         }
 
         /* TABS */
         .tabs {
             display: flex;
             background: #e6d8ff;
-            padding: 5px;
-            border-radius: 8px;
+            padding: 4px;
+            border-radius: 12px;
             margin-bottom: 20px;
         }
+        
         .tab {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: none;
             background: transparent;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
+        
         .tab.active {
             background: white;
-            border-radius: 6px;
             color: #7a3cff;
             font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* METHODS */
+        /* PAYMENT METHODS */
         .methods {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 20px;
         }
+        
         .method {
             flex: 1;
-            padding: 12px;
-            border: 2px solid #bfa6ff;
-            border-radius: 10px;
+            padding: 15px 10px;
+            border: 2px solid #d0b8ff;
+            border-radius: 12px;
             text-align: center;
             cursor: pointer;
             display: flex;
@@ -81,122 +98,171 @@
             align-items: center;
             gap: 8px;
             background: white;
+            transition: all 0.3s ease;
         }
+        
         .method.active {
-            border: 3px solid #7a3cff;
-            background: #efe6ff;
+            border-color: #7a3cff;
+            background: #f0e8ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(122, 60, 255, 0.2);
+        }
+
+        .payment-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        .paytm-icon {
+            background: #002E6E;
+        }
+        
+        .phonepe-icon {
+            background: #5F259F;
         }
 
         /* WARNING BOX */
         .warning {
-            background: #ffe9c2;
-            color: #7a3c00;
+            background: #fff3cd;
+            color: #856404;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 10px;
             margin: 20px 0;
             text-align: center;
+            border-left: 4px solid #ffc107;
+            font-size: 14px;
         }
 
-        /* CARD */
+        /* CARD STYLES */
         .card {
             background: white;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             margin-bottom: 20px;
         }
+        
         .step-title {
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             display: block;
+            color: #333;
+            font-size: 15px;
         }
 
-        /* COPY FIELDS */
+        /* COPY BOXES */
         .copy-box {
             display: flex;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
+        
         .copy-box input {
             flex: 1;
-            padding: 12px;
-            border-radius: 8px 0 0 8px;
-            border: 1px solid #ddd;
-            font-size: 14px;
+            padding: 14px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px 0 0 10px;
+            font-size: 15px;
+            background: #fafafa;
         }
+        
         .copy-box button {
-            padding: 12px 15px;
+            padding: 14px 18px;
             border: none;
             background: #7a3cff;
             color: white;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 10px 10px 0;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .copy-box button:hover {
+            background: #6a2ce0;
         }
 
-        /* UTR FIELD */
+        /* UTR BOX */
         .utr-box {
             display: flex;
-            margin-top: 10px;
+            margin-top: 5px;
         }
+        
         .utr-box input {
             flex: 1;
-            padding: 12px;
-            border-radius: 8px 0 0 8px;
-            border: 1px solid #ddd;
-            font-size: 14px;
+            padding: 14px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px 0 0 10px;
+            font-size: 15px;
         }
+        
         .utr-box button {
-            padding: 12px 15px;
+            padding: 14px 20px;
             border: none;
-            background: #7a3cff;
+            background: #28a745;
             color: white;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 10px 10px 0;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .utr-box button:hover {
+            background: #218838;
+        }
+
+        /* QR CODE SECTION */
+        .qr-section {
+            display: none;
+        }
+        
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            min-height: 280px;
+        }
+        
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        #qrcode img {
+            border-radius: 8px;
         }
 
         .center { 
             text-align: center; 
         }
-
-        /* PAYMENT ICONS */
-        .payment-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 12px;
-        }
-        .paytm-icon {
-            background: #002E6E;
-        }
-        .phonepe-icon {
-            background: #5F259F;
+        
+        .qr-instruction {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
         }
 
-        /* QR CODE CENTERING */
-        .qr-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-            min-height: 220px;
-        }
-        #qrcode {
-            display: flex;
-            justify-content: center;
-        }
-        #qrcode canvas {
-            border: 10px solid white;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        /* HIDDEN CLASS */
+        .hidden {
+            display: none !important;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -220,11 +286,11 @@
         
         <!-- PAYMENT METHODS -->
         <div class="methods">
-            <div class="method active" id="paytm">
+            <div class="method active" id="paytmMethod">
                 <div class="payment-icon paytm-icon">Paytm</div>
                 <span>Paytm</span>
             </div>
-            <div class="method" id="phonepe">
+            <div class="method" id="phonepeMethod">
                 <div class="payment-icon phonepe-icon">PhonePe</div>
                 <span>PhonePe</span>
             </div>
@@ -232,7 +298,7 @@
 
         <!-- WARNING BOX -->
         <div class="warning">
-            ⚠️ Make sure to send the exact amount shown above.
+            ⚠️ Make sure to send the exact amount shown above
         </div>
 
         <!-- MANUAL TRANSFER CARD -->
@@ -258,143 +324,212 @@
     </div>
 
     <!-- QR CODE SECTION -->
-    <div id="qrSection" style="display: none;">
+    <div id="qrSection" class="qr-section">
         <div class="card center">
             <div class="step-title">Scan QR Code to Pay</div>
             <div class="qr-container">
                 <div id="qrcode"></div>
             </div>
-            <p>Scan this QR code with any UPI app</p>
+            <p class="qr-instruction">Scan this QR code with any UPI app</p>
         </div>
     </div>
 
 </div>
 
+<!-- Load QRCode.js from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
 <script>
-    // ------- GET URL PARAMETERS -------
+    // ======== CONFIGURATION ========
+    const DEFAULT_UPI = '7488570438-2@ikwik';
+    const DEFAULT_AMOUNT = '3715.31';
+
+    // ======== URL PARAMETER HANDLING ========
     function getUrlParams() {
         const urlParams = new URLSearchParams(window.location.search);
-        return {
-            upi: urlParams.get('upi'),
-            amount: urlParams.get('amount')
-        };
+        const upi = urlParams.get('upi') || DEFAULT_UPI;
+        const amount = urlParams.get('amount') || DEFAULT_AMOUNT;
+        
+        return { upi, amount };
     }
 
-    // ------- INITIALIZE WITH URL PARAMETERS -------
     function initializeFromUrl() {
-        const params = getUrlParams();
+        const { upi, amount } = getUrlParams();
         
-        if (params.upi) {
-            document.getElementById('upiID').value = params.upi;
-        }
+        // Update display elements
+        document.getElementById('upiID').value = upi;
+        document.getElementById('amountBox').value = amount;
+        document.getElementById('amountDisplay').textContent = `₹${amount}`;
         
-        if (params.amount) {
-            const amount = parseFloat(params.amount);
-            if (!isNaN(amount)) {
-                document.getElementById('amountDisplay').textContent = '₹' + amount;
-                document.getElementById('amountBox').value = amount;
-            }
-        }
+        console.log('Initialized with:', { upi, amount });
         
-        // Update QR code with current values
-        updateQRCode();
+        // Generate QR code
+        generateQRCode(upi, amount);
     }
 
-    // ------- UPDATE QR CODE -------
-    function updateQRCode() {
-        const upi = document.getElementById('upiID').value;
-        const amount = document.getElementById('amountBox').value;
+    // ======== QR CODE GENERATION ========
+    function generateQRCode(upi, amount) {
+        const qrContainer = document.getElementById('qrcode');
+        qrContainer.innerHTML = ''; // Clear previous QR code
         
-        const qrText = `upi://pay?pa=${upi}&pn=Payment&am=${amount}&cu=INR`;
+        const upiUrl = `upi://pay?pa=${upi}&pn=Recipient&am=${amount}&cu=INR`;
         
-        // Clear previous QR code
-        document.getElementById('qrcode').innerHTML = '';
-        
-        // Generate new QR code
-        new QRCode(document.getElementById('qrcode'), {
-            text: qrText,
+        QRCode.toCanvas(qrContainer, upiUrl, {
             width: 200,
             height: 200,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
+            margin: 1,
+            color: {
+                dark: '#000000',
+                light: '#FFFFFF'
+            }
+        }, function(error) {
+            if (error) {
+                console.error('QR Code generation failed:', error);
+                qrContainer.innerHTML = `
+                    <div style="text-align: center; color: #666; padding: 20px;">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📱</div>
+                        <div>QR Code failed to load</div>
+                        <div style="font-size: 12px; margin-top: 5px;">Please try refreshing</div>
+                    </div>
+                `;
+            } else {
+                console.log('QR Code generated successfully');
+            }
         });
     }
 
-    // ------- TIMER -------
-    let sec = 600;
+    // ======== TIMER FUNCTIONALITY ========
+    let seconds = 600; // 10 minutes
+    
     function updateTimer() {
-        let m = String(Math.floor(sec / 60)).padStart(2, '0');
-        let s = String(sec % 60).padStart(2, '0');
-        document.getElementById("timer").innerHTML = `${m}:${s}`;
-        if (sec > 0) sec--;
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        const timerDisplay = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        
+        document.getElementById('timer').textContent = timerDisplay;
+        
+        if (seconds > 0) {
+            seconds--;
+        } else {
+            // Timer completed
+            document.getElementById('timer').style.color = '#ff4444';
+        }
     }
-    setInterval(updateTimer, 1000);
 
-    // ------- TABS -------
-    document.getElementById("tabDirect").onclick = function () {
-        this.classList.add("active");
-        document.getElementById("tabQR").classList.remove("active");
+    // ======== TAB FUNCTIONALITY ========
+    function setupTabs() {
+        const tabDirect = document.getElementById('tabDirect');
+        const tabQR = document.getElementById('tabQR');
+        const directSection = document.getElementById('directSection');
+        const qrSection = document.getElementById('qrSection');
 
-        document.getElementById("directSection").style.display = "block";
-        document.getElementById("qrSection").style.display = "none";
-    };
+        tabDirect.addEventListener('click', function() {
+            this.classList.add('active');
+            tabQR.classList.remove('active');
+            directSection.style.display = 'block';
+            qrSection.style.display = 'none';
+        });
 
-    document.getElementById("tabQR").onclick = function () {
-        this.classList.add("active");
-        document.getElementById("tabDirect").classList.remove("active");
+        tabQR.addEventListener('click', function() {
+            this.classList.add('active');
+            tabDirect.classList.remove('active');
+            directSection.style.display = 'none';
+            qrSection.style.display = 'block';
+        });
+    }
 
-        document.getElementById("directSection").style.display = "none";
-        document.getElementById("qrSection").style.display = "block";
-    };
+    // ======== PAYMENT METHOD SELECTION ========
+    function setupPaymentMethods() {
+        const paytmMethod = document.getElementById('paytmMethod');
+        const phonepeMethod = document.getElementById('phonepeMethod');
 
-    // ------- METHOD SELECTION -------
-    document.getElementById("paytm").onclick = function() {
-        document.getElementById("paytm").classList.add("active");
-        document.getElementById("phonepe").classList.remove("active");
-    };
+        paytmMethod.addEventListener('click', function() {
+            this.classList.add('active');
+            phonepeMethod.classList.remove('active');
+        });
 
-    document.getElementById("phonepe").onclick = function() {
-        document.getElementById("phonepe").classList.add("active");
-        document.getElementById("paytm").classList.remove("active");
-    };
+        phonepeMethod.addEventListener('click', function() {
+            this.classList.add('active');
+            paytmMethod.classList.remove('active');
+        });
+    }
 
-    // ------- COPY FUNCTIONS -------
+    // ======== COPY FUNCTIONS ========
     function copyUPI() {
-        navigator.clipboard.writeText(document.getElementById("upiID").value);
-        alert("UPI ID Copied!");
+        const upiInput = document.getElementById('upiID');
+        upiInput.select();
+        upiInput.setSelectionRange(0, 99999);
+        
+        try {
+            navigator.clipboard.writeText(upiInput.value);
+            alert('✅ UPI ID copied to clipboard!');
+        } catch (err) {
+            alert('❌ Failed to copy UPI ID');
+        }
     }
 
     function copyAmount() {
-        navigator.clipboard.writeText(document.getElementById("amountBox").value);
-        alert("Amount Copied!");
+        const amountInput = document.getElementById('amountBox');
+        amountInput.select();
+        amountInput.setSelectionRange(0, 99999);
+        
+        try {
+            navigator.clipboard.writeText(amountInput.value);
+            alert('✅ Amount copied to clipboard!');
+        } catch (err) {
+            alert('❌ Failed to copy amount');
+        }
     }
 
-    // ------- SUBMIT UTR -------
+    // ======== UTR SUBMISSION ========
     function submitUTR() {
-        let utr = document.getElementById("utrInput").value;
-        if (utr.length < 5) {
-            alert("Enter a valid UTR number!");
+        const utrInput = document.getElementById('utrInput');
+        const utr = utrInput.value.trim();
+        
+        if (utr.length < 6) {
+            alert('❌ Please enter a valid UTR number (at least 6 characters)');
+            utrInput.focus();
             return;
         }
-        alert("UTR Submitted: " + utr);
-        document.getElementById("utrInput").value = "";
+        
+        alert(`✅ UTR Submitted Successfully!\n\nUTR: ${utr}\nAmount: ₹${document.getElementById('amountBox').value}\n\nThank you for your payment!`);
+        utrInput.value = '';
     }
 
-    // ------- INITIALIZE PAGE -------
+    // ======== INITIALIZATION ========
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('Payment Gateway Initializing...');
+        
         // Initialize from URL parameters
         initializeFromUrl();
         
-        // Set initial active tab
-        document.getElementById("tabDirect").classList.add("active");
-        document.getElementById("directSection").style.display = "block";
-        document.getElementById("qrSection").style.display = "none";
+        // Setup functionality
+        setupTabs();
+        setupPaymentMethods();
         
-        // Set initial active method
-        document.getElementById("paytm").classList.add("active");
-        document.getElementById("phonepe").classList.remove("active");
+        // Start timer
+        setInterval(updateTimer, 1000);
+        updateTimer(); // Initial call
+        
+        console.log('Payment Gateway Ready!');
+        
+        // Log current parameters for debugging
+        const params = getUrlParams();
+        console.log('Current Parameters:', params);
     });
+
+    // ======== DEBUGGING HELP ========
+    window.debugPayment = function() {
+        const params = getUrlParams();
+        console.log('Debug Info:', {
+            urlParams: params,
+            currentUPI: document.getElementById('upiID').value,
+            currentAmount: document.getElementById('amountBox').value,
+            qrContainer: document.getElementById('qrcode').innerHTML.length
+        });
+        alert(`Debug Info:\nUPI: ${params.upi}\nAmount: ${params.amount}`);
+    };
 </script>
+
 </body>
 </html>
