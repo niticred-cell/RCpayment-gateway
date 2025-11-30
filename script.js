@@ -1,112 +1,66 @@
-// Timer functionality
-let timeLeft = 5 * 60 + 18; // 5 minutes and 18 seconds
-const timerElement = document.querySelector('.timer');
-
+// ------- TIMER -------
+let sec = 600;
 function updateTimer() {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    
-    if (timeLeft > 0) {
-        timeLeft--;
-    } else {
-        clearInterval(timerInterval);
-        timerElement.style.background = '#ff4444';
-        alert('Payment time has expired!');
-    }
+    let m = String(Math.floor(sec / 60)).padStart(2, '0');
+    let s = String(sec % 60).padStart(2, '0');
+    document.getElementById("timer").innerHTML = `${m}:${s}`;
+    if (sec > 0) sec--;
+}
+setInterval(updateTimer, 1000);
+
+// ------- TABS -------
+document.getElementById("tabDirect").onclick = function () {
+    this.classList.add("active");
+    document.getElementById("tabQR").classList.remove("active");
+
+    document.getElementById("directSection").style.display = "block";
+    document.getElementById("qrSection").style.display = "none";
+};
+
+document.getElementById("tabQR").onclick = function () {
+    this.classList.add("active");
+    document.getElementById("tabDirect").classList.remove("active");
+
+    document.getElementById("directSection").style.display = "none";
+    document.getElementById("qrSection").style.display = "block";
+};
+
+// ------- METHOD SELECTION -------
+document.getElementById("paytm").onclick = () => {
+    document.getElementById("paytm").classList.add("active");
+    document.getElementById("phonepe").classList.remove("active");
+};
+document.getElementById("phonepe").onclick = () => {
+    document.getElementById("phonepe").classList.add("active");
+    document.getElementById("paytm").classList.remove("active");
+};
+
+// ------- COPY FUNCTIONS -------
+function copyUPI() {
+    navigator.clipboard.writeText(document.getElementById("upiID").value);
+    alert("UPI ID Copied!");
+}
+function copyAmount() {
+    navigator.clipboard.writeText(document.getElementById("amountBox").value);
+    alert("Amount Copied!");
 }
 
-const timerInterval = setInterval(updateTimer, 1000);
+// ------- SUBMIT UTR -------
+function submitUTR() {
+    let utr = document.getElementById("utrInput").value;
+    if (utr.length < 5) {
+        alert("Enter a valid UTR number!");
+        return;
+    }
+    alert("UTR Submitted: " + utr);
+}
 
-// Payment method selection
-const methods = document.querySelectorAll('.method');
-methods.forEach(method => {
-    method.addEventListener('click', () => {
-        methods.forEach(m => m.style.background = '#f8f9fa');
-        method.style.background = '#e3f2fd';
+// ------- QR CODE -------
+// Initialize QR code on page load
+document.addEventListener('DOMContentLoaded', function() {
+    new QRCode(document.getElementById("qrcode"), {
+        text: "upi://pay?pa=7488570438-2@ikwik&pn=Payment&am=3000",
+        width: 200,
+        height: 200
     });
-});
-
-// Copy UPI ID functionality
-const copyBtn = document.querySelector('.copy-btn');
-copyBtn.addEventListener('click', () => {
-    const upiId = 'u****o@axl';
-    
-    // Create a temporary textarea to copy text
-    const textArea = document.createElement('textarea');
-    textArea.value = upiId;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-    
-    // Visual feedback
-    const originalText = copyBtn.textContent;
-    copyBtn.textContent = 'Copied!';
-    copyBtn.style.background = '#4CAF50';
-    
-    setTimeout(() => {
-        copyBtn.textContent = originalText;
-        copyBtn.style.background = '#2196F3';
-    }, 2000);
-});
-
-// Form validation
-const submitBtn = document.querySelector('.submit-btn');
-const refNoInput = document.getElementById('ref-no');
-const errorMessage = document.querySelector('.error-message');
-
-submitBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    
-    if (!refNoInput.value.trim()) {
-        refNoInput.style.borderColor = '#ff4444';
-        errorMessage.classList.add('show');
-    } else if (refNoInput.value.trim().length !== 12) {
-        refNoInput.style.borderColor = '#ff4444';
-        errorMessage.textContent = 'Ref No must be exactly 12 characters';
-        errorMessage.classList.add('show');
-    } else {
-        refNoInput.style.borderColor = '#4CAF50';
-        errorMessage.classList.remove('show');
-        alert('Payment submitted successfully!');
-        
-        // Reset form
-        setTimeout(() => {
-            refNoInput.value = '';
-            refNoInput.style.borderColor = '#ddd';
-        }, 2000);
-    }
-});
-
-// Save QR Code functionality
-const saveQrBtn = document.querySelector('.save-qr');
-saveQrBtn.addEventListener('click', () => {
-    alert('QR Code saved successfully!');
-});
-
-// How to find UTR link
-const helpLink = document.querySelector('.help-link');
-helpLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    alert('To find your UTR number:\n1. Open your bank app\n2. Go to transaction history\n3. Find the payment transaction\n4. Look for "UTR" or "Reference Number"');
-});
-
-// Input validation for Ref No
-refNoInput.addEventListener('input', (e) => {
-    const value = e.target.value;
-    
-    // Only allow numbers and letters
-    e.target.value = value.replace(/[^a-zA-Z0-9]/g, '');
-    
-    // Limit to 12 characters
-    if (value.length > 12) {
-        e.target.value = value.slice(0, 12);
-    }
-    
-    // Reset border color and error when user starts typing
-    if (value.length > 0) {
-        e.target.style.borderColor = '#ddd';
-        errorMessage.classList.remove('show');
-    }
 });
