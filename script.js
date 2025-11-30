@@ -26,11 +26,12 @@ document.getElementById("tabQR").onclick = function () {
 };
 
 // ------- METHOD SELECTION -------
-document.getElementById("paytm").onclick = () => {
+document.getElementById("paytm").onclick = function() {
     document.getElementById("paytm").classList.add("active");
     document.getElementById("phonepe").classList.remove("active");
 };
-document.getElementById("phonepe").onclick = () => {
+
+document.getElementById("phonepe").onclick = function() {
     document.getElementById("phonepe").classList.add("active");
     document.getElementById("paytm").classList.remove("active");
 };
@@ -40,6 +41,7 @@ function copyUPI() {
     navigator.clipboard.writeText(document.getElementById("upiID").value);
     alert("UPI ID Copied!");
 }
+
 function copyAmount() {
     navigator.clipboard.writeText(document.getElementById("amountBox").value);
     alert("Amount Copied!");
@@ -53,6 +55,8 @@ function submitUTR() {
         return;
     }
     alert("UTR Submitted: " + utr);
+    // Clear the input after submission
+    document.getElementById("utrInput").value = "";
 }
 
 // ------- QR CODE -------
@@ -61,6 +65,21 @@ document.addEventListener('DOMContentLoaded', function() {
     new QRCode(document.getElementById("qrcode"), {
         text: "upi://pay?pa=7488570438-2@ikwik&pn=Payment&am=3000",
         width: 200,
-        height: 200
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
     });
+});
+
+// ------- INITIALIZE PAGE -------
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial active tab
+    document.getElementById("tabDirect").classList.add("active");
+    document.getElementById("directSection").style.display = "block";
+    document.getElementById("qrSection").style.display = "none";
+    
+    // Set initial active method
+    document.getElementById("paytm").classList.add("active");
+    document.getElementById("phonepe").classList.remove("active");
 });
