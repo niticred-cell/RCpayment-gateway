@@ -3,65 +3,262 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Payment Gateway</title>
+<title>UPI Payment</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
 
-<link rel="stylesheet" href="style.css">
+/* ===== CSS ===== */
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f5f0ff;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 400px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.header {
+  text-align: center;
+}
+
+.header h1 {
+  color: #6b21a8;
+  margin: 0;
+  font-size: 28px;
+}
+
+.amount {
+  font-size: 36px;
+  font-weight: 700;
+  color: #6b21a8;
+}
+
+.timer {
+  margin-top: 5px;
+  display: inline-block;
+  background: #e9d5ff;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-weight: bold;
+  color: #6b21a8;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  background: #f3e8ff;
+  border: none;
+  font-weight: bold;
+  color: #6b21a8;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  background: #6b21a8;
+  color: #fff;
+}
+
+/* Payment method buttons */
+.payment-method {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.method-btn {
+  flex: 1;
+  border: 2px solid #6b21a8;
+  border-radius: 12px;
+  padding: 12px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  color: #6b21a8;
+  background: #fff;
+}
+
+.method-btn.active {
+  background: #6b21a8;
+  color: #fff;
+}
+
+/* Info boxes */
+.warning {
+  background: #fffae5;
+  color: #b45309;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.copy-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f3e8ff;
+  padding: 10px;
+  border-radius: 12px;
+  margin-top: 6px;
+}
+
+.copy-field button {
+  background: #6b21a8;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  margin-top: 8px;
+}
+
+.submit {
+  width: 100%;
+  margin-top: 12px;
+  background: #6b21a8;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* QR */
+#qr {
+  display: none;
+  text-align: center;
+}
+
+#qr img {
+  margin-top: 15px;
+  width: 220px;
+  height: 220px;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  color: #6b21a8;
+  font-weight: bold;
+}
+
+</style>
 </head>
-
 <body>
 
 <div class="container">
 
   <div class="header">
     <h1>Payment Amount</h1>
-    <div id="amount" class="amount">₹0</div>
-    <div id="timer" class="timer">00:10:00</div>
+    <div class="amount">₹3000</div>
+    <div id="timer" class="timer">00:09:28</div>
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('direct', this)">Direct Transfer</button>
-    <button class="tab-btn" onclick="switchTab('qr', this)">Scan QR</button>
+    <button class="tab-btn active" onclick="showTab('direct')">Direct</button>
+    <button class="tab-btn" onclick="showTab('qr')">QR Code</button>
   </div>
 
   <!-- DIRECT -->
   <div id="direct">
     <div class="payment-method">
-      <div class="method-btn" onclick="selectMethod(this)">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Paytm_logo.png">
-        Paytm
-      </div>
-
-      <div class="method-btn" onclick="selectMethod(this)">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/PhonePe_Logo.png">
-        PhonePe
-      </div>
+      <div class="method-btn active" onclick="selectMethod(this)">Paytm</div>
+      <div class="method-btn" onclick="selectMethod(this)">PhonePe</div>
     </div>
 
     <div class="warning">
-      ⚠ Payment can only be made once. Multiple payments are not valid!
+      ⚠ Payment can be made only once. Multiple payments are invalid.
     </div>
 
+    <strong>UPI ID</strong>
     <div class="copy-field">
-      <span id="upiID"></span>
-      <button onclick="copyText('upiID')">Copy</button>
+      <span id="upi">6206286698@naviaxis</span>
+      <button onclick="copyText('upi')">Copy</button>
     </div>
 
+    <strong>Amount</strong>
     <div class="copy-field">
-      <span id="sendAmount"></span>
-      <button onclick="copyText('sendAmount')">Copy</button>
+      <span id="amt">₹3000</span>
+      <button onclick="copyText('amt')">Copy</button>
     </div>
 
-    <input type="text" id="utr" placeholder="Enter UTR / Reference Number">
-    <button onclick="submitUTR()">Submit</button>
+    <strong>UTR / Reference No</strong>
+    <input id="utr" placeholder="Enter UTR">
+    <button class="submit" onclick="submitUTR()">Submit</button>
   </div>
 
   <!-- QR -->
-  <div id="qr" style="display:none;text-align:center">
-    <img id="qrImage">
+  <div id="qr">
+    <h3>Scan & Pay</h3>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=6206286698@naviaxis&pn=RupCredit&am=3000&cu=INR">
   </div>
 
+  <div class="footer">100% Secure Payment</div>
 </div>
 
-<script src="Script.js"></script>
+<script>
+/* ===== JS ===== */
+
+// Tabs
+function showTab(tab){
+  document.getElementById('direct').style.display = tab === 'direct' ? 'block' : 'none';
+  document.getElementById('qr').style.display = tab === 'qr' ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// Method select
+function selectMethod(el){
+  document.querySelectorAll('.method-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Copy
+function copyText(id){
+  navigator.clipboard.writeText(document.getElementById(id).innerText);
+}
+
+// Timer
+let time = 9*60+28;
+setInterval(()=>{
+  if(time<=0) return;
+  time--;
+  const m = String(Math.floor(time/60)).padStart(2,'0');
+  const s = String(time%60).padStart(2,'0');
+  document.getElementById('timer').innerText = `00:${m}:${s}`;
+},1000);
+
+// Submit
+function submitUTR(){
+  const utr = document.getElementById('utr').value.trim();
+  if(!utr) return alert("Enter UTR");
+  alert("UTR Submitted: "+utr);
+}
+</script>
+
 </body>
 </html>
