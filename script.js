@@ -1,37 +1,65 @@
-// Switch Tabs
+/* ================= URL PARAMS ================= */
+
+function getParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+const upi = getParam("upi") || "example@upi";
+const amount = getParam("amount") || "0";
+
+/* ================= SET VALUES ================= */
+
+document.getElementById("upi").innerText = upi;
+document.getElementById("amt").innerText = "₹" + amount;
+document.getElementById("amount").innerText = "₹" + amount;
+
+/* ================= QR ================= */
+
+const qrData = `upi://pay?pa=${upi}&pn=Payment&am=${amount}&cu=INR`;
+document.getElementById("qrImg").src =
+  "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" +
+  encodeURIComponent(qrData);
+
+/* ================= TABS ================= */
+
 function showTab(tab, btn) {
-  document.getElementById('direct').style.display = tab === 'direct' ? 'block' : 'none';
-  document.getElementById('qr').style.display = tab === 'qr' ? 'block' : 'none';
+  document.getElementById("direct").style.display = tab === "direct" ? "block" : "none";
+  document.getElementById("qr").style.display = tab === "qr" ? "block" : "none";
 
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
 }
 
-// Select Payment Method
+/* ================= METHOD SELECT ================= */
+
 function selectMethod(el) {
-  document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
+  document.querySelectorAll(".method-btn").forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
 }
 
-// Copy Text
+/* ================= COPY ================= */
+
 function copyText(id) {
   navigator.clipboard.writeText(document.getElementById(id).innerText);
   alert("Copied!");
 }
 
-// Countdown Timer
-let time = 9 * 60 + 28;
+/* ================= TIMER ================= */
+
+let time = 10 * 60;
 setInterval(() => {
   if (time <= 0) return;
   time--;
-  const m = String(Math.floor(time / 60)).padStart(2, '0');
-  const s = String(time % 60).padStart(2, '0');
-  document.getElementById('timer').innerText = `00:${m}:${s}`;
+
+  const m = String(Math.floor(time / 60)).padStart(2, "0");
+  const s = String(time % 60).padStart(2, "0");
+  document.getElementById("timer").innerText = `00:${m}:${s}`;
 }, 1000);
 
-// Submit UTR
+/* ================= SUBMIT ================= */
+
 function submitUTR() {
-  const utr = document.getElementById('utr').value.trim();
+  const utr = document.getElementById("utr").value.trim();
   if (!utr) {
     alert("Please enter UTR");
     return;
