@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UPI Payment</title>
 
-  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,8 +15,8 @@
   <!-- Header -->
   <div class="header">
     <h1>Payment Amount</h1>
-    <div class="amount">₹3000</div>
-    <div id="timer" class="timer">00:09:28</div>
+    <div id="amount" class="amount">₹0</div>
+    <div id="timer" class="timer">00:10:00</div>
   </div>
 
   <!-- Tabs -->
@@ -41,13 +38,13 @@
 
     <strong>UPI ID</strong>
     <div class="copy-field">
-      <span id="upi">6206286698@naviaxis</span>
+      <span id="upi">loading...</span>
       <button onclick="copyText('upi')">Copy</button>
     </div>
 
     <strong>Amount</strong>
     <div class="copy-field">
-      <span id="amt">₹3000</span>
+      <span id="amt">₹0</span>
       <button onclick="copyText('amt')">Copy</button>
     </div>
 
@@ -56,19 +53,15 @@
     <button class="submit" onclick="submitUTR()">Submit</button>
   </div>
 
-  <!-- QR Payment -->
+  <!-- QR -->
   <div id="qr">
     <h3>Scan & Pay</h3>
-    <img
-      src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=6206286698@naviaxis&pn=RupCredit&am=3000&cu=INR"
-      alt="QR Code">
+    <img id="qrImg" alt="QR Code">
   </div>
 
   <div class="footer">100% Secure Payment</div>
-
 </div>
 
-<!-- JS -->
 <script src="script.js"></script>
 </body>
 </html>
