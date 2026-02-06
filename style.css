@@ -14,7 +14,6 @@ body {
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-/* Header */
 .header {
   text-align: center;
 }
@@ -40,7 +39,6 @@ body {
   font-weight: bold;
 }
 
-/* Tabs */
 .tabs {
   display: flex;
   gap: 10px;
@@ -63,7 +61,6 @@ body {
   color: #ffffff;
 }
 
-/* Payment Methods */
 .payment-method {
   display: flex;
   gap: 10px;
@@ -87,7 +84,6 @@ body {
   color: #ffffff;
 }
 
-/* Warning */
 .warning {
   background: #fffae5;
   color: #b45309;
@@ -97,7 +93,6 @@ body {
   margin-bottom: 15px;
 }
 
-/* Copy Fields */
 .copy-field {
   display: flex;
   justify-content: space-between;
@@ -117,7 +112,6 @@ body {
   cursor: pointer;
 }
 
-/* Inputs */
 input {
   width: 100%;
   padding: 10px;
@@ -126,7 +120,6 @@ input {
   margin-top: 6px;
 }
 
-/* Submit Button */
 .submit {
   width: 100%;
   margin-top: 12px;
@@ -139,7 +132,6 @@ input {
   cursor: pointer;
 }
 
-/* QR */
 #qr {
   display: none;
   text-align: center;
@@ -151,7 +143,6 @@ input {
   margin-top: 15px;
 }
 
-/* Footer */
 .footer {
   text-align: center;
   margin-top: 20px;
